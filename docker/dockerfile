@@ -1,0 +1,22 @@
+FROM ubuntu:18.04
+
+
+RUN apt-get -y update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential python3-pip gcc python3-dev locales
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+
+RUN locale-gen
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+
+ARG APPNAME=demo
+ARG APPDIR=/root/${APPNAME}
+RUN mkdir ${APPDIR}
+WORKDIR ${APPDIR}
+ADD . ${APPDIR}
+
+RUN pip3 install --no-cache-dir -r ${APPDIR}/requirements.txt
+RUN apt-get remove --purge -y build-essential python3-pip gcc python3-dev
+
+CMD ["uwsgi", "--ini", "docker/uwsgi"]

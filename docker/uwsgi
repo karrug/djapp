@@ -1,0 +1,7 @@
+[uwsgi]
+
+chdir = /root/djapp
+module = djapp.wsgi
+http = 127.0.0.1:80
+master = true
+lazy-apps = true
